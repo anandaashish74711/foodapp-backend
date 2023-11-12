@@ -41,11 +41,11 @@ const userSchema = mongoose.Schema({
 userSchema.pre('save',function(){
     console.log('before saving in db')
 })
-userSchema.pre('save', async function() {
-    let salt = await bcrypt.genSalt();
-    this.password = await bcrypt.hash(this.password, salt);
+// userSchema.pre('save', async function() {
+//     let salt = await bcrypt.genSalt();
+//     this.password = await bcrypt.hash(this.password, salt);
    
-});
+// });
 
 userSchema.post('save',function(doc){
     console.log('after saving in db');

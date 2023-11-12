@@ -2,8 +2,7 @@ const express = require('express');
 const userRouter = express.Router();
 
 
-const path = require('path');
-const userModel = require(path.join(__dirname, './Models/UserModel'));
+const userModel=require( "../Models/UserModel")
 
 
 userRouter
