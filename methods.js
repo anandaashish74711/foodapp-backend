@@ -40,9 +40,9 @@ userRouter
     .patch(patchUser)
     .delete(deleteUser);
 
-userRouter
-    .route('/:id')
-    .get(getUserbyId);
+// userRouter
+//     .route('/:id')
+//     .get(getUserbyId);
 
    
     userRouter
@@ -107,16 +107,16 @@ async function deleteUser(req, res) {
 
 
 
-function getUserbyId(req, res) {
-    const userId = parseInt(req.params.id);
-    const user = users.find(user => user.id === userId);
+// function getUserbyId(req, res) {
+//     const userId = parseInt(req.params.id);
+//     const user = users.find(user => user.id === userId);
 
-    if (user) {
-        res.send(user);
-    } else {
-        res.status(404).send('User not found');
-    }
-};
+//     if (user) {
+//         res.send(user);
+//     } else {
+//         res.status(404).send('User not found');
+//     }
+// };
 
 function getsignup(req, res) {
     res.sendFile('index.html', { root: path.join(__dirname, 'public') });
@@ -133,7 +133,8 @@ async function postsignup(req, res) {
 
 function setCookies(req,res){
 res.setHeader('Set-Cookies','isLoggedIn=true');
-res.cookie('isLoggedIn',true);
+res.cookie('isLoggedIn',true,{maxAge:1000*60*24,secure:true,httpOnly:true});
+
 res.send('COOKIES has been set');
 }
 function getCookies(req, res) {
