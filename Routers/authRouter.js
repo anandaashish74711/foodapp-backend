@@ -2,6 +2,11 @@ const express = require("express");
 const userModel = require('../Models/UserModel');
 const authRouter = express.Router();
 
+const cookieParser = require('cookie-parser');
+
+const app = express();
+app.use(cookieParser());
+
 authRouter
     .route('/signup')
     .post(postsignup)

@@ -1,13 +1,19 @@
 const express = require('express');
 const userRouter = express.Router();
 
+const cookieParser = require('cookie-parser');
+
+const app = express();
+app.use(cookieParser());
+
 
 const userModel=require( "../Models/UserModel")
+const protectRoute = require('./authHelper');
 
 
 userRouter
     .route('/')
-    .get(getUsers)
+    .get(protectRoute,getUsers)
     .post(postUser)
     .patch(patchUser)
     .delete(deleteUser);
@@ -29,7 +35,7 @@ userRouter
 
 
      async function getUsers(req, res) {
-        let user = await userModel.findOne({ name: 'Ayush' });
+        let user = await userModel.find();
       
       res.json({message:'list of all users',
       data:user})
@@ -83,12 +89,16 @@ userRouter
 
     function setCookies(req,res){
         res.setHeader('Set-Cookies','isLoggedIn=true');
-        res.cookie('isLoggedIn',true,{maxAge:1000*60*24,secure:true,httpOnly:true});
+        res.cookie('isLoggedIn',true,{maxAge:1000*60*24,secure:true},{httpOnly:true});
         
         res.send('COOKIES has been set');
         }
         function getCookies(req, res) {
             res.send(req.headers.cookie);
         }
+
+        
+
+      
 
         module.exports=userRouter;
