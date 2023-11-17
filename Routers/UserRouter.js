@@ -1,104 +1,40 @@
 const express = require('express');
 const userRouter = express.Router();
+const cookieParser = require('cookie-parser')
 
-const cookieParser = require('cookie-parser');
-
+const {
+    getUser,
+    postUser,
+    patchUser,
+    deleteUser,
+    getAllUser,
+    setCookies,
+    getCookies
+} = require('../controller/UserController');
 const app = express();
 app.use(cookieParser());
-
-
-const userModel=require( "../Models/UserModel")
 const protectRoute = require('./authHelper');
 
+//user ke options
+userRouter.route('/:id')
+.patch(updateUser)
+.delete(deleteUser)
 
+
+//admin specific function
+app.use(isAuthorised(['admin']))
 userRouter
-    .route('/')
-    .get(protectRoute,getUsers)
-    .post(postUser)
-    .patch(patchUser)
-    .delete(deleteUser);
-
-// userRouter
-//     .route('/:id')
-//     .get(getUserbyId);
-
-   
-    userRouter
-     .route('/getCookies')
-     .get(getCookies); 
-
-     userRouter
-     .route('/setCookies')
-     .get(setCookies); 
-
-  
+.route('')
+.get(getAllUser)
 
 
-     async function getUsers(req, res) {
-        let user = await userModel.find();
-      
-      res.json({message:'list of all users',
-      data:user})
-          // res.send(users);
-      };
-      
-      function postUser(req, res) {
-          console.log(req.body);
-          if (Array.isArray(req.body)) {
-              users = users.concat(req.body);
-          } else {
-              users.push(req.body);
-          }
-          res.json({
-              message: "data received successfully",
-              user: req.body
-          });
-      };
-      
-      async function patchUser(req, res) {
-          console.log('req.body->', req.body);
-          const update = req.body;
-          const userToUpdate = await userModel.findOne({ email: update.email });
-          if (userToUpdate) {
-              userToUpdate.name = update.name;
-              await userToUpdate.save();
-          }
-          res.json({
-              message: "data updated successfully"
-          });
-      };
-      
-      
-      
-      
-      
-      async function deleteUser(req, res) {
-         let dataToBeDeleted=req.body;
-         let user=await userModel.findOneAndDelete(dataToBeDeleted);
-         res.json({
-          message:"data has been deleted",
-          data:user
-         })
-      };
+//profile page
+app.use(protectRoute)
+userRouter
+.route('/userProfile')
+.get(getUser)
+     
+     
 
-      function getUserbyId(req, res) {
-        const userId = parseInt(req.params.username);
-        console.log(req.params);
-        res.send("user id recieved");
-    };
-
-    function setCookies(req,res){
-        res.setHeader('Set-Cookies','isLoggedIn=true');
-        res.cookie('isLoggedIn',true,{maxAge:1000*60*24,secure:true},{httpOnly:true});
-        
-        res.send('COOKIES has been set');
-        }
-        function getCookies(req, res) {
-            res.send(req.headers.cookie);
-        }
-
-        
-
-      
 
         module.exports=userRouter;
