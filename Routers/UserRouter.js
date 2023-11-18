@@ -1,39 +1,30 @@
 const express = require('express');
 const userRouter = express.Router();
-const cookieParser = require('cookie-parser')
 
+const { postsignup, loginuser, isAuthorised, protectRoute } = require('../controller/authController');
 const {
     getUser,
-    postUser,
     updateUser,
     deleteUser,
     getAllUser,
-    setCookies,
-    getCookies
 } = require('../controller/UserController');
-const app = express();
-app.use(cookieParser());
-const protectRoute = require('./authHelper');
 
-//user ke options
+// User options
 userRouter.route('/:id')
-.patch(updateUser)
-.delete(deleteUser)
+    .patch(updateUser)
+    .delete(deleteUser)
 
+userRouter.route('/signup').post(postsignup)
+userRouter.route('/login').post(loginuser)
 
-//admin specific function
-app.use(isAuthorised(['admin']))
-userRouter
-.route('')
-.get(getAllUser)
+// Admin specific function
+userRouter.route('')
+    .all(isAuthorised(['admin'])) // Apply the isAuthorised middleware to all requests to this route
+    .get(getAllUser)
 
+// Profile page
+userRouter.route('/userProfile')
+    .all(protectRoute) // Apply the protectRoute middleware to all requests to this route
+    .get(getUser)
 
-//profile page
-app.use(protectRoute)
-userRouter
-.route('/userProfile')
-.get(getUser)
-     
-     
-
- module.exports=userRouter;
+module.exports = userRouter;

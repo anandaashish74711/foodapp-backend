@@ -5,15 +5,13 @@ const path = require('path');
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-
-const userRouter=require('./Routers/UserRouter')
-const authRouter=require('./Routers/authRouter')
-
-console.log('Express app initialized');
-app.listen(3000);
-console.log('Server started on port 3000');
+const userRouter = require('./Routers/UserRouter');
 
 
-app.use('/auth',authRouter)
+
 app.use('/user', userRouter);
 
+console.log('Express app initialized');
+
+app.listen(3000);
+console.log('Server started on port 3000');
