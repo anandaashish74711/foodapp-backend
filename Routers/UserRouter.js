@@ -5,7 +5,7 @@ const cookieParser = require('cookie-parser')
 const {
     getUser,
     postUser,
-    patchUser,
+    updateUser,
     deleteUser,
     getAllUser,
     setCookies,
@@ -36,5 +36,4 @@ userRouter
      
      
 
-
-        module.exports=userRouter;
+ module.exports=userRouter;

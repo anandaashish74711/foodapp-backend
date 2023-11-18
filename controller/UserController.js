@@ -12,7 +12,8 @@ module.exports.getUser = async function(req, res) {
 };
 
 
-module.exports.patchUser = async function(req, res) {
+module.exports.updateUser = async function(req, res) {
+    try{
     // console.log('req.body->', req.body);
     let id=req.params.id;
     let user=userModel.findById(id)
@@ -25,31 +26,60 @@ module.exports.patchUser = async function(req, res) {
         for(let i=0;i<keys.length;i++){
             user[keys[i]=dataTOBeupdated[keys[i]]]
         }
+        const updatedData=await user.save();
     }
-    const userToUpdate = await userModel.findOne({ email: update.email });
-    if (userToUpdate) {
-        userToUpdate.name = update.name;
-        await userToUpdate.save();
-    }
+  
     res.json({
-        message: "data updated successfully"
+        message: "data updated successfully",
+        data:user
     });
+}
+catch{
+    res.json({
+        message:"error"
+    })
+
+}
 };
 
 module.exports.deleteUser = async function(req, res) {
-    let dataToBeDeleted = req.body;
-    let user = await userModel.findOneAndDelete(dataToBeDeleted);
+    try{
+ let id=req.params.id;
+ let user=await userModel.findbyIdAndDelete(id);
+ if(!user){
+    res.json({message:'user not found'})
+ }
     res.json({
         message:"data has been deleted",
         data:user
     });
+}
+catch(err){
+    res.json({
+        message:err.message
+    })
+}
 };
 
-// module.exports.getUserbyId = function(req, res) {
-//     const userId = parseInt(req.params.username);
-//     console.log(req.params);
-//     res.send("user id recieved");
-// };
+
+module.exports.getAllUser = async function(req, res) {
+    try{
+ let users=await userModel.find();
+ if(users){
+    res.json({
+        message:'users retrieved',
+        data:users
+    })
+    res.send("user id recieved")
+ }
+    }
+ catch(err){
+res.json({
+    message:'not found'
+
+})
+ }
+};
 
 module.exports.setCookies = function(req,res){
     res.setHeader('Set-Cookies','isLoggedIn=true');
@@ -57,6 +87,6 @@ module.exports.setCookies = function(req,res){
     res.send('COOKIES has been set');
 };
 
-module.exports.getCookies = function(req, res) {
-    res.send(req.headers.cookie);
-};
+// module.exports.getCookies = function(req, res) {
+//     res.send(req.headers.cookie);
+// };
