@@ -12,19 +12,19 @@ const {
 // User options
 userRouter.route('/:id')
     .patch(updateUser)
-    .delete(deleteUser)
+    .delete(deleteUser);
 
-userRouter.route('/signup').post(postsignup)
-userRouter.route('/login').post(loginuser)
+userRouter.route('/signup').post(postsignup);
+userRouter.route('/login').post(loginuser);
 
 // Admin specific function
 userRouter.route('')
     .all(isAuthorised(['admin'])) // Apply the isAuthorised middleware to all requests to this route
-    .get(getAllUser)
+    .get(getAllUser);
 
 // Profile page
 userRouter.route('/userProfile')
     .all(protectRoute) // Apply the protectRoute middleware to all requests to this route
-    .get(getUser)
+    .get(getUser);
 
 module.exports = userRouter;
