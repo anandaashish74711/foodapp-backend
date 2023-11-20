@@ -1,7 +1,7 @@
 const express = require('express');
 const userRouter = express.Router();
 
-const { postsignup, loginuser, isAuthorised, protectRoute } = require('../controller/authController');
+const { postsignup, loginuser, isAuthorised, protectRoute,forgetpassword } = require('../controller/authController');
 const {
     getUser,
     updateUser,
@@ -26,7 +26,7 @@ userRouter.route('')
 userRouter.route('/userProfile')
     .all(protectRoute) // Apply the protectRoute middleware to all requests to this route
     .get(getUser);
-userRouter.route('/forgetPassword/:token')
-.post(forgetPassword)
+userRouter.route('/forgetpassword/:token')
+.post(forgetpassword)
 
 module.exports = userRouter;
