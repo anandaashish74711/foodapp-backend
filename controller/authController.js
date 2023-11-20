@@ -4,12 +4,13 @@ const authRouter = express.Router();
 const jwt=require('jsonwebtoken')
 const cookieParser = require('cookie-parser');
 const JWT_KEY='GHFVQERGFLEJCBFVEWJHCEDCNQEVUV'
-
+const {sendMail}=require('../utility/nodemailer')
 
 module.exports.postsignup = async (req, res) => {
     try {
         let dataobj = req.body;
         let user = await userModel.create(dataobj);
+        sendMail("signup",user);
         if(user){
             res.json({
                 message: "user signed up",
@@ -99,4 +100,67 @@ module.exports.protectRoute=async function(req, res, next) {
     }
 }
 
-    
+module.exports.forgetpassword = async function forgetpassword(req, res) {
+    let { email } = req.body;
+    try {
+      const user = await userModel.findOne({ email: email });
+      if (user) {
+        //createResetToken is used to create a new token
+        const resetToken = user.createResetToken();
+        // http://abc.com/resetpassword/resetToken
+        let resetPasswordLink = `${req.protocol}://${req.get(
+          "host"
+        )}/resetpassword/${resetToken}`;
+        //send email to the user
+        //nodemailer
+        let obj={
+          resetPasswordLink:resetPasswordLink,
+          email:email
+        }
+        sendMail("resetpassword",obj);
+        return res.json({
+          mesage: "reset password link sent",
+          data:resetPasswordLink
+        });
+      } else {
+        return res.json({
+          mesage: "please signup",
+        });
+      }
+    } catch (err) {
+      res.status(500).json({
+        mesage: err.message,
+      });
+    }
+  };
+
+module.exports.resetpassword = async function resetpassword(req, res) {
+    try {
+      const token = req.parmas.token;
+      let { password, confirmPassword } = req.body;
+      const user = await userModel.findOne({ resetToken: token });
+  
+      if (user) {
+        //resetPasswordHandler will update user's password in db
+        user.resetPasswordHandler(password, confirmPassword);
+        await user.save();
+        res.json({
+          message: "password changed succesfully, please login again",
+        });
+      } else {
+        res.json({
+          message: "user not found",
+        });
+      }
+    } catch (err) {
+      res.json({
+        message: err.message,
+      });
+    }
+  };
+  module.exports.logout=function logout(req,res){
+    res.cookie('login',' ',{maxAge:1});
+    res.json({
+      message:"user logged out succesfully"
+    });
+  }

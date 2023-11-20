@@ -26,5 +26,7 @@ userRouter.route('')
 userRouter.route('/userProfile')
     .all(protectRoute) // Apply the protectRoute middleware to all requests to this route
     .get(getUser);
+userRouter.route('/forgetPassword/:token')
+.post(forgetPassword)
 
 module.exports = userRouter;

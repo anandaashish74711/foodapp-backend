@@ -25,7 +25,7 @@
     let name= document.querySelector("input[type='text']").value;
     let password= document.querySelector("input[type='password']").value;
 
-let resp=await axios.post('/auth/signup',{email,name,password})
+let resp=await axios.post('/user/signup',{email,name,password})
 console.log('resp',resp);
 });
     </script>

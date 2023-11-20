@@ -2,6 +2,7 @@ const mongoose=require('mongoose');
 const emailValidator=require('email-validator')
 const bcrypt=require('bcrypt')
 const db_link='mongodb+srv://anandaashish512:Z8BEU9EQjUIx5Liv@cluster0.anltsdp.mongodb.net/?retryWrites=true&w=majority';
+const crypto=require('crypto')
 mongoose.connect(db_link)
   .then(() => {
     console.log('db connected');
@@ -45,8 +46,8 @@ role:{
 profileImage:{
   type:String,
   default:'img/users/default.jpeg'
-}
-
+},
+ reseToken:String
 
 });
 userSchema.pre('save',function(){
@@ -95,4 +96,15 @@ const userModel = mongoose.model('userModel', userSchema);
 //     console.error(error);
 //   }
 // })();
+userSchema.methods.createResetToken=function(){
+//craeting unique token using npm crypto
+const reseToken=crypto.randomBytes(32).toString(hex);
+this.reseToken=reseToken
+return reseToken;
+}
+userSchema.methods.resetpassword=function(password,confirmPassword){
+  this.password=password;
+  this.confirmPassword=confirmPassword;
+  this.reseToken=undefined;
+}
 module.exports=userModel;
