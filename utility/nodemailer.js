@@ -6,8 +6,8 @@ module.exports.sendMail = async function sendMail(str, data) {
     port: 587,
     secure: false,
     auth: {
-      user: process.env.EMAIL_USER, // use environment variable
-      pass: process.env.EMAIL_PASS, // use environment variable
+      user: '', // replace with your email
+      pass: '', // replace with your password
     },
   });
 
@@ -32,7 +32,7 @@ module.exports.sendMail = async function sendMail(str, data) {
 
   try {
     let info = await transporter.sendMail({
-      from: '"FoodApp 🍱" <' + process.env.EMAIL_USER + '>', // use environment variable
+      from: '"FoodApp 🍱" <your-email@gmail.com>', // replace with your email
       to: data.email,
       subject: Osubject,
       html: Ohtml,
